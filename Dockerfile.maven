@@ -1,0 +1,15 @@
+FROM maven:latest as builder
+
+COPY . /.mvn
+WORKDIR /.mvn
+
+RUN mvn test
+RUN mvn clean package
+
+FROM java:latest
+
+COPY --from=builder /.mvn/wrapper/maven-wrapper.jar /.mvn/wrapper/maven-wrapper.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "/.mvn/wrapper/maven-wrapper.jar"]
